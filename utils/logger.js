@@ -1,7 +1,8 @@
-logEvent({
-  userId,
-  action: "upload",
-  entity: "appeal",
-  entityId: appealId,
-  timestamp: new Date(),
-});
+function logEvent(message) {
+  const timestamp = new Date().toISOString();
+  console.log(`[${timestamp}] ${message}`);
+}
+
+module.exports = {
+  logEvent,
+};
