@@ -28,7 +28,8 @@ const upload = require("./middleware/upload");
 const uploadToGCS = require("./utils/gcsUploader");
 const { logEvent } = require("./utils/logger");
 const { db } = require("./utils/firebaseAdmin");
-const { handleFileUpload } = require("./controllers/uploadController");
+const { handleFileUpload, getRecentUploads } = require("./controllers/uploadController");
 
 //posts intake files to google cloud bucket
 app.post("/api/upload", upload.single("file"), handleFileUpload);
+app.get("/api/uploads/recent", getRecentUploads);
