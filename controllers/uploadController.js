@@ -43,7 +43,25 @@ async function handleFileUpload(req, res) {
 
 // Get latest 10 uploaded files
 async function getRecentUploads(req, res) {
-  // make this function
+  try {
+    const snapshot = await db
+    .collection("uploads")
+    .orderBy("uploadedAt", "desc")
+    .limit(10)
+    .get();
+
+    const uploads = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ... doc.data(),
+    }))
+
+    res.status(200).json(uploads);
+  } catch(err) {
+    console.error('Failed to fetch recent uploads: ', err);
+    await logEvent("Failed to fetch recent uploads", {error: err.message}, true);
+    res.status(500).send("Failed to fetch recent uploads");
+    
+  }
 }
 
 module.exports = { handleFileUpload, getRecentUploads };

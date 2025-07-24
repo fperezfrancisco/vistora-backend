@@ -35,6 +35,7 @@ const validateFileType = require("./middleware/validateFileType");
 
 //posts intake files to google cloud bucket
 app.post("/api/upload", upload.single("file"), handleFileUpload);
+app.get("/api/uploads/recent", getRecentUploads);
 //gets intake files and posts them to firebase
 
 app.post(
