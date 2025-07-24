@@ -29,6 +29,26 @@ const uploadToGCS = require("./utils/gcsUploader");
 const { logEvent } = require("./utils/logger");
 const { db } = require("./utils/firebaseAdmin");
 const { handleFileUpload } = require("./controllers/uploadController");
+//intakeParser
+const { handleIntakeParse } = require("./controllers/intakeController");
+const validateFileType = require("./middleware/validateFileType");
 
 //posts intake files to google cloud bucket
 app.post("/api/upload", upload.single("file"), handleFileUpload);
+//gets intake files and posts them to firebase
+
+app.post(
+  "/api/intake/parse",
+  upload.single("file"),
+  validateFileType,
+  handleIntakeParse
+);
+
+//get denials by upload
+const { getDenialsByUpload } = require("./controllers/intakeController");
+
+app.get("/api/uploads/:uploadId/denials", getDenialsByUpload);
+
+const { handleParsedIntake } = require("./controllers/intakeController");
+
+app.post("/api/intake", handleParsedIntake);
