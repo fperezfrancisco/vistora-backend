@@ -32,6 +32,7 @@ const { handleFileUpload } = require("./controllers/uploadController");
 //intakeParser
 const { handleIntakeParse } = require("./controllers/intakeController");
 const validateFileType = require("./middleware/validateFileType");
+const { getRecentUploads } = require("./controllers/uploadController");
 
 //posts intake files to google cloud bucket
 app.post("/api/upload", upload.single("file"), handleFileUpload);
