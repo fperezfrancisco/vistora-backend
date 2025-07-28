@@ -35,6 +35,8 @@ const validateFileType = require("./middleware/validateFileType");
 
 //posts intake files to google cloud bucket
 app.post("/api/upload", upload.single("file"), handleFileUpload);
+
+const { getRecentUploads } = require("./controllers/uploadController")
 app.get("/api/uploads/recent", getRecentUploads);
 //gets intake files and posts them to firebase
 
@@ -53,3 +55,11 @@ app.get("/api/uploads/:uploadId/denials", getDenialsByUpload);
 const { handleParsedIntake } = require("./controllers/intakeController");
 
 app.post("/api/intake", handleParsedIntake);
+
+// Add new appeals to appeals collection
+const { addAppeals } = require("./controllers/appealController")
+app.post("/api/appeals/add", addAppeals)
+
+// Add a new user to user collection
+const { addUser } = require("./controllers/usersController")
+app.post("/api/users/add", addUser)

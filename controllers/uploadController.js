@@ -64,4 +64,31 @@ async function getRecentUploads(req, res) {
   }
 }
 
-module.exports = { handleFileUpload, getRecentUploads };
+async function getDenials(req, res) {
+  try {
+    const { uploadID } = req.params;
+    
+    if (!uploadID) {
+      return res.status(400).json({ error: "Missing uploadID parameter"})
+    }
+
+    const snapshot = await db
+    .collection('denials')
+    .where("uploadID", "==", uploadID)
+    .get();
+
+    const denials = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    res.status(200).json(denials);
+  } catch(err) {
+    console.error('Failed to fetch denials: ', err);
+    await logEvent("Failed to fetch denials", {error: err.message}, true);
+    res.status(500).send("Failed to fetch denials");
+    
+  }
+}
+
+module.exports = { handleFileUpload, getRecentUploads, getDenials };
