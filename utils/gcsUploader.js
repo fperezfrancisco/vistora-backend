@@ -4,7 +4,15 @@ const path = require("path");
 const storage = new Storage({
   keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
 });
-const bucket = storage.bucket(process.env.GCP_BUCKET_NAME);
+
+const bucketName = process.env.GCS_BUCKET_NAME;
+
+if (!bucketName) {
+  throw new Error("Missing GCS_BUCKET_NAME env variable");
+}
+
+const bucket = storage.bucket(bucketName);
+//const bucket = storage.bucket(process.env.GCP_BUCKET_NAME);
 
 async function uploadToGCS(fileBuffer, filename, folder = "intake-uploads") {
   const destination = `${folder}/${Date.now()}_${filename}`;
