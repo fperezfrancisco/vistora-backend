@@ -9,9 +9,29 @@ dotenv.config();
 app.use(express.json());
 
 // Enable CORS (adjust for security later)
+/*
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://your-frontend.vercel.app", // Update this once deployed
+];
+
 app.use(
   cors({
-    origin: "http://localhost:3000", // Frontend origin
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+*/
+
+app.use(
+  cors({
+    origin: true,
     credentials: true, // If using cookies/auth headers
   })
 );
@@ -20,7 +40,7 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
 
@@ -32,6 +52,7 @@ const { handleFileUpload } = require("./controllers/uploadController");
 //intakeParser
 const { handleIntakeParse } = require("./controllers/intakeController");
 const validateFileType = require("./middleware/validateFileType");
+const { getRecentUploads } = require("./controllers/uploadController");
 
 //posts intake files to google cloud bucket
 app.post("/api/upload", upload.single("file"), handleFileUpload);
