@@ -54,4 +54,40 @@ async function addAppeals(req, res){
     }
 }
 
-module.exports = { addAppeals }
+async function getAppeals(req, res){
+    try {
+        const { preparedBy, status } = req.query;
+
+        let query = db.collection("appeals");
+
+        if(preparedBy) {
+            query = query.where("preparedBy", "==", preparedBy);
+        }
+
+        if(status){
+            query = query.where("status", "==", status);
+        }
+
+        const snapshot = await query.get();
+
+        const appeals = snapshot.docs.map(doc => ({
+            appealID: doc.id,
+            ...doc.data(),
+        }));
+
+        const user = preparedBy || "Unknown";
+
+        await logEvent(
+            "Appeals Fetched",
+            { user: user, count: appeals.length },
+            true
+        );
+
+        res.status(200).json(appeals);
+    } catch(error) {
+        console.error("Error fetching appeas:", error);
+        res.status(500).json({ error: "Failed to fetch appeal" })
+    }
+}
+
+module.exports = { addAppeals, getAppeals }
