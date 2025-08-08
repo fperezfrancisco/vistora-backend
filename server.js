@@ -55,9 +55,14 @@ const validateFileType = require("./middleware/validateFileType");
 const { getRecentUploads } = require("./controllers/uploadController");
 
 //posts intake files to google cloud bucket
-app.post("/api/upload", upload.single("file"), handleFileUpload);
+app.post(
+  "/api/upload",
+  upload.single("file"),
+  verifyFirebaseToken,
+  handleFileUpload
+);
 
-app.get("/api/uploads/recent", getRecentUploads);
+app.get("/api/uploads/recent", verifyFirebaseToken, getRecentUploads);
 //gets intake files and posts them to firebase
 
 app.post(
@@ -70,25 +75,33 @@ app.post(
 //get denials by upload
 const { getDenialsByUpload } = require("./controllers/intakeController");
 
-app.get("/api/uploads/:uploadId/denials", getDenialsByUpload);
+app.get(
+  "/api/uploads/:uploadId/denials",
+  verifyFirebaseToken,
+  getDenialsByUpload
+);
 
 const { handleParsedIntake } = require("./controllers/intakeController");
 
-app.post("/api/intake", handleParsedIntake);
+app.post("/api/intake", verifyFirebaseToken, handleParsedIntake);
 
 // Appeals functions
-const { addAppeals, getAppeals } = require("./controllers/appealController")
+const { addAppeals, getAppeals } = require("./controllers/appealController");
 // Add appeal or get appeals
-app.post("/api/appeals/add", addAppeals);
-app.get("/api/appeals/get", getAppeals);
+app.post("/api/appeals/add", verifyFirebaseToken, addAppeals);
+app.get("/api/appeals/get", verifyFirebaseToken, getAppeals);
 
 // Add a new user to user collection
 const { addUser } = require("./controllers/usersController");
-app.post("/api/users/add", addUser)
+app.post("/api/users/add", verifyFirebaseToken, addUser);
 
 // Get template to use for appeal generator
-const { usePayerTemplate, useAppealTemplate } = require("./controllers/generatorController");
-//Query by doing /api/template/payer?payer=Aetna as an example 
-app.get("/api/template/payer", usePayerTemplate);
+const {
+  usePayerTemplate,
+  useAppealTemplate,
+} = require("./controllers/generatorController");
+const verifyFirebaseToken = require("./middleware/verifyFirebaseToken");
+//Query by doing /api/template/payer?payer=Aetna as an example
+app.get("/api/template/payer", verifyFirebaseToken, usePayerTemplate);
 //Query by doing /api/template/genAppeal?cptCode=99213&denialReason=Insufficient%20documentation as an example
-app.get("/api/template/genAppeal/", useAppealTemplate);
+app.get("/api/template/genAppeal/", verifyFirebaseToken, useAppealTemplate);
