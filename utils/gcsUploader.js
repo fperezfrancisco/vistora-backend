@@ -5,7 +5,7 @@ const storage = new Storage({
   keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
 });
 
-const bucketName = process.env.GCS_BUCKET_NAME;
+const bucketName = process.env.GCP_BUCKET_NAME;
 
 if (!bucketName) {
   throw new Error("Missing GCS_BUCKET_NAME env variable");
