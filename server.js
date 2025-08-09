@@ -53,6 +53,8 @@ const { handleFileUpload } = require("./controllers/uploadController");
 const { handleIntakeParse } = require("./controllers/intakeController");
 const validateFileType = require("./middleware/validateFileType");
 const { getRecentUploads } = require("./controllers/uploadController");
+//verify firebase
+const verifyFirebaseToken = require("./middleware/verifyFirebaseToken");
 
 //posts intake files to google cloud bucket
 app.post(
@@ -100,7 +102,7 @@ const {
   usePayerTemplate,
   useAppealTemplate,
 } = require("./controllers/generatorController");
-const verifyFirebaseToken = require("./middleware/verifyFirebaseToken");
+
 //Query by doing /api/template/payer?payer=Aetna as an example
 app.get("/api/template/payer", verifyFirebaseToken, usePayerTemplate);
 //Query by doing /api/template/genAppeal?cptCode=99213&denialReason=Insufficient%20documentation as an example
