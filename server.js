@@ -63,6 +63,14 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+app.get("/api/me", verifyFirebaseToken, (req, res) => {
+  res.json({
+    uid: req.user?.uid || null,
+    email: req.user?.email || null,
+    projectId: req.user?.aud || null, // from token payload
+  });
+});
+
 //posts intake files to google cloud bucket
 app.post(
   "/api/upload",
