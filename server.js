@@ -55,6 +55,7 @@ const validateFileType = require("./middleware/validateFileType");
 const { getRecentUploads } = require("./controllers/uploadController");
 //verify firebase
 const verifyFirebaseToken = require("./middleware/verifyFirebaseToken");
+const admin = require("./utils/firebaseAdmin");
 
 app.get("/api/health", (req, res) => {
   res.json({
@@ -67,7 +68,8 @@ app.get("/api/me", verifyFirebaseToken, (req, res) => {
   res.json({
     uid: req.user?.uid || null,
     email: req.user?.email || null,
-    projectId: req.user?.aud || null, // from token payload
+    tokenAud: req.user?.aud || null, // token projectId
+    adminProjectId: admin.app().options.projectId || null, // backend projectId
   });
 });
 
