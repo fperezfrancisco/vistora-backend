@@ -58,11 +58,15 @@ async function getRecentUploads(req, res) {
     res.status(200).json(uploads);
   } catch (err) {
     //console.error('Failed to fetch recent uploads: ', err);
-    await logEvent(
-      "Failed to fetch recent uploads",
-      { error: err.message },
-      true
-    );
+    try {
+      await logEvent(
+        "Failed to fetch recent uploads",
+        { error: err?.message },
+        true
+      );
+    } catch (logErr) {
+      console.warn("logEvent failed:", logErr?.message);
+    }
     console.error("getRecentUploads failed:", err?.code, err?.message);
     // minimal JSON so your frontend can see it
     res.status(500).json({

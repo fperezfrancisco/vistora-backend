@@ -1,4 +1,4 @@
-const { db } = require("./firebaseAdmin");
+const { db } = require("../utils/firebaseAdmin");
 
 async function logEvent(message, metadata = {}, persist = false) {
   const timestamp = new Date().toISOString();
