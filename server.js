@@ -81,12 +81,7 @@ app.post(
   handleFileUpload
 );
 
-app.get("/api/uploads/recent", verifyFirebaseToken, (req, res) => {
-  res.json([
-    { id: "test", filename: "ok.txt", uploadedAt: new Date().toISOString() },
-  ]);
-});
-//app.get("/api/uploads/recent", verifyFirebaseToken, getRecentUploads);
+app.get("/api/uploads/recent", verifyFirebaseToken, getRecentUploads);
 //gets intake files and posts them to firebase
 
 app.post(
