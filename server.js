@@ -56,15 +56,6 @@ const { getRecentUploads } = require("./controllers/uploadController");
 //verify firebase
 const verifyFirebaseToken = require("./middleware/verifyFirebaseToken");
 
-app.get("/api/health", (req, res) => {
-  res.json({ ok: true, time: new Date().toISOString() });
-});
-
-app.use((err, req, res, next) => {
-  const status = err.status || 500;
-  res.status(status).json({ error: "Server error", status });
-});
-
 //posts intake files to google cloud bucket
 app.post(
   "/api/upload",
