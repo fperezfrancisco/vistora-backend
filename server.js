@@ -55,6 +55,23 @@ const validateFileType = require("./middleware/validateFileType");
 const { getRecentUploads } = require("./controllers/uploadController");
 //verify firebase
 const verifyFirebaseToken = require("./middleware/verifyFirebaseToken");
+const admin = require("./utils/firebaseAdmin");
+
+app.get("/api/health", (req, res) => {
+  res.json({
+    ok: true,
+    time: new Date().toISOString(),
+  });
+});
+
+app.get("/api/me", verifyFirebaseToken, (req, res) => {
+  res.json({
+    uid: req.user?.uid || null,
+    email: req.user?.email || null,
+    tokenAud: req.user?.aud || null, // token projectId
+    adminProjectId: admin.app().options.projectId || null, // backend projectId
+  });
+});
 
 //posts intake files to google cloud bucket
 app.post(

@@ -45,37 +45,50 @@ async function handleFileUpload(req, res) {
 async function getRecentUploads(req, res) {
   try {
     const snapshot = await db
-    .collection("uploads")
-    .orderBy("uploadedAt", "desc")
-    .limit(10)
-    .get();
+      .collection("uploads")
+      .orderBy("uploadedAt", "desc")
+      .limit(10)
+      .get();
 
     const uploads = snapshot.docs.map((doc) => ({
       id: doc.id,
-      ... doc.data(),
-    }))
+      ...doc.data(),
+    }));
 
     res.status(200).json(uploads);
-  } catch(err) {
-    console.error('Failed to fetch recent uploads: ', err);
-    await logEvent("Failed to fetch recent uploads", {error: err.message}, true);
-    res.status(500).send("Failed to fetch recent uploads");
-    
+  } catch (err) {
+    //console.error('Failed to fetch recent uploads: ', err);
+    try {
+      await logEvent(
+        "Failed to fetch recent uploads",
+        { error: err?.message },
+        true
+      );
+    } catch (logErr) {
+      console.warn("logEvent failed:", logErr?.message);
+    }
+    console.error("getRecentUploads failed:", err?.code, err?.message);
+    // minimal JSON so your frontend can see it
+    res.status(500).json({
+      error: "getRecentUploads",
+      code: err?.code || null,
+      message: err?.message || String(err),
+    });
   }
 }
 
 async function getDenials(req, res) {
   try {
     const { uploadID } = req.params;
-    
+
     if (!uploadID) {
-      return res.status(400).json({ error: "Missing uploadID parameter"})
+      return res.status(400).json({ error: "Missing uploadID parameter" });
     }
 
     const snapshot = await db
-    .collection('denials')
-    .where("uploadID", "==", uploadID)
-    .get();
+      .collection("denials")
+      .where("uploadID", "==", uploadID)
+      .get();
 
     const denials = snapshot.docs.map((doc) => ({
       id: doc.id,
@@ -83,11 +96,10 @@ async function getDenials(req, res) {
     }));
 
     res.status(200).json(denials);
-  } catch(err) {
-    console.error('Failed to fetch denials: ', err);
-    await logEvent("Failed to fetch denials", {error: err.message}, true);
+  } catch (err) {
+    console.error("Failed to fetch denials: ", err);
+    await logEvent("Failed to fetch denials", { error: err.message }, true);
     res.status(500).send("Failed to fetch denials");
-    
   }
 }
 
