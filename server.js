@@ -106,4 +106,4 @@ const {
 //Query by doing /api/template/payer?payer=Aetna as an example
 app.get("/api/template/payer", verifyFirebaseToken, usePayerTemplate);
 //Query by doing /api/template/genAppeal?cptCode=99213&denialReason=Insufficient%20documentation as an example
-app.get("/api/template/genAppeal/", verifyFirebaseToken, useAppealTemplate);
+app.get("/api/template/genAppeal", verifyFirebaseToken, useAppealTemplate);
