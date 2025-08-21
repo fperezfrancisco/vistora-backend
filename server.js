@@ -70,6 +70,7 @@ app.get("/api/me", verifyFirebaseToken, (req, res) => {
     email: req.user?.email || null,
     tokenAud: req.user?.aud || null, // token projectId
     adminProjectId: admin.app().options.projectId || null, // backend projectId
+    userType: req.user?.type || null,
   });
 });
 
