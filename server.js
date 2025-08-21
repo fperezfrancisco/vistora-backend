@@ -56,6 +56,7 @@ const { getRecentUploads } = require("./controllers/uploadController");
 //verify firebase
 const verifyFirebaseToken = require("./middleware/verifyFirebaseToken");
 const admin = require("./utils/firebaseAdmin");
+const attachUserRole = require("./middleware/attachUserRole");
 
 app.get("/api/health", (req, res) => {
   res.json({
@@ -70,7 +71,8 @@ app.get("/api/me", verifyFirebaseToken, (req, res) => {
     email: req.user?.email || null,
     tokenAud: req.user?.aud || null, // token projectId
     adminProjectId: admin.app().options.projectId || null, // backend projectId
-    userType: req.user?.type || null,
+    userRole: req.user?.role || null,
+    orgId: req.user?.orgId || "No Org Id",
   });
 });
 
@@ -79,10 +81,16 @@ app.post(
   "/api/upload",
   upload.single("file"),
   verifyFirebaseToken,
+  attachUserRole,
   handleFileUpload
 );
 
-app.get("/api/uploads/recent", verifyFirebaseToken, getRecentUploads);
+app.get(
+  "/api/uploads/recent",
+  verifyFirebaseToken,
+  attachUserRole,
+  getRecentUploads
+);
 //gets intake files and posts them to firebase
 
 app.post(
@@ -98,12 +106,18 @@ const { getDenialsByUpload } = require("./controllers/intakeController");
 app.get(
   "/api/uploads/:uploadId/denials",
   verifyFirebaseToken,
+  attachUserRole,
   getDenialsByUpload
 );
 
 const { handleParsedIntake } = require("./controllers/intakeController");
 
-app.post("/api/intake", verifyFirebaseToken, handleParsedIntake);
+app.post(
+  "/api/intake",
+  verifyFirebaseToken,
+  attachUserRole,
+  handleParsedIntake
+);
 
 // Appeals functions
 const { addAppeals, getAppeals } = require("./controllers/appealController");
