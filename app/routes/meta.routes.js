@@ -2,7 +2,7 @@
 const { Router } = require("express");
 const verifyFirebaseToken = require("../middleware/verifyFirebaseToken");
 const attachUserRole = require("../middleware/attachUserRole");
-const admin = require("../config/firebaseAdmin"); // keep your current admin loader
+const admin = require("../utils/firebaseAdmin"); // keep your current admin loader
 
 const r = Router();
 
