@@ -65,14 +65,14 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-app.get("/api/me", verifyFirebaseToken, (req, res) => {
+app.get("/api/me", verifyFirebaseToken, attachUserRole, (req, res) => {
   res.json({
     uid: req.user?.uid || null,
     email: req.user?.email || null,
     tokenAud: req.user?.aud || null, // token projectId
     adminProjectId: admin.app().options.projectId || null, // backend projectId
-    userRole: req.user?.role || null,
-    orgId: req.user?.orgId || "No Org Id",
+    userRole: req.authz?.role || null,
+    orgId: req.authz?.orgId || "No Org Id",
   });
 });
 
